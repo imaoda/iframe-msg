@@ -13,7 +13,7 @@ function getDomFromName(name) {
   }
   if (typeof name === "string") {
     if (name[0] === "#" || name[0] === ".") return document.querySelector(name);
-    else return window.frames[name];
+    else if (window.frames[name]) return name;
   }
   return null;
 }
@@ -34,22 +34,35 @@ function getRadId() {
 // 向子节点发送请求
 function sendSon(obj, name) {
   return new Promise((resolve, reject) => {
-    if (defaultSon && !defaultSon.isConnected) defaultSon = null;
+    if (defaultSon) {
+      // 确认 defaultSon 还是否在页面中
+      if (defaultSon instanceof HTMLIFrameElement && !defaultSon.isConnected)
+        defaultSon = null;
+      if (typeof defaultSon === "string" && !window.frames[defaultSon])
+        defaultSon = null;
+    }
+
     if (!name && !defaultSon) {
       reject(`没有设置发送子frame的name，也可通过默认值设置`);
       return;
     }
-    var fr = getDomFromName(name) || defaultSon;
+    var fr = getDomFromName(name);
+    if (name && !fr) {
+      reject(`没有名为${name}的子iframe`);
+      return;
+    }
+    if (!name) {
+      fr =
+        typeof defaultSon === "string"
+          ? window.frames[defaultSon]
+          : defaultSon.contentWindow;
+    }
     if (!fr) {
-      reject(`没有name为${name}的子iframe`);
-      console.warn(`没有name为${name}的子iframe`);
+      reject(`没有找到对应的iframe`);
       return;
     }
     var msgId = getRadId();
-    fr.contentWindow.postMessage(
-      JSON.stringify({ [K_ID]: msgId, data: obj }),
-      "*"
-    );
+    fr.postMessage(JSON.stringify({ [K_ID]: msgId, data: obj }), "*");
     promArrMapSon[msgId] = { resolve, reject };
 
     // 超时清理
@@ -64,20 +77,20 @@ function sendSon(obj, name) {
 
 // 接受子iframe发来的信息
 window.addEventListener("message", ({ data, source }) => {
-  let json;
+  var json;
   try {
-    json = JSON.stringify(data);
+    json = JSON.parse(data);
   } catch (error) {}
   if (!json || !json[K_ID]) return;
   var id = json[K_ID];
   // 判断是一次响应还是一次请求
   // 响应自子 iframe
   if (promArrMapSon[id]) {
-    promArrMapSon[id].resolve(data);
+    promArrMapSon[id].resolve(json.data);
     delete promArrMapSon[id];
   } else if (promArrMapDad[id]) {
     // 响应自父 iframe
-    promArrMapDad[id].resolve(data);
+    promArrMapDad[id].resolve(json.data);
     delete promArrMapDad[id];
   } else {
     // 请求
@@ -91,7 +104,7 @@ window.addEventListener("message", ({ data, source }) => {
         "*"
       );
     };
-    requestHandler(data, cb);
+    requestHandler(json.data, cb);
   }
 });
 
