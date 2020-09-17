@@ -1,0 +1,29 @@
+{
+  "name": "iframe-msg",
+  "version": "0.0.1",
+  "description": "send msg between iframe with promises",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imaoda/iframe-msg.git"
+  },
+  "keywords": [
+    "iframe",
+    "sendMessage",
+    "message",
+    "promise",
+    "communication"
+  ],
+  "author": "wangyongfeng",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/imaoda/iframe-msg/issues"
+  },
+  "homepage": "https://github.com/imaoda/iframe-msg#readme",
+  "dependencies": {
+    "umi-library": "^1.6.0"
+  }
+}
