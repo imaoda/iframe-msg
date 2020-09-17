@@ -19,11 +19,11 @@ function getDomFromName(name) {
 }
 
 // 设置默认子iframe的name
-function setDefaultSon(name) {
+export function setDefaultSon(name) {
   defaultSon = getDomFromName(name);
 }
 // 设置应答函数 (不区分来源于父iframe还是子iframe)
-function setMsgHandler(fn) {
+export function setMsgHandler(fn) {
   requestHandler = fn;
 }
 
@@ -32,7 +32,7 @@ function getRadId() {
 }
 
 // 向子节点发送请求
-function sendSon(obj, name) {
+export function sendSon(obj, name) {
   return new Promise((resolve, reject) => {
     if (defaultSon) {
       // 确认 defaultSon 还是否在页面中
@@ -94,12 +94,12 @@ window.addEventListener("message", ({ data, source }) => {
     delete promArrMapDad[id];
   } else {
     // 请求
-    var cb = (response) => {
+    var cb = response => {
       if (!source) return;
       source.postMessage(
         JSON.stringify({
           [K_ID]: id,
-          data: response,
+          data: response
         }),
         "*"
       );
@@ -111,7 +111,7 @@ window.addEventListener("message", ({ data, source }) => {
 // 是否寄生在页面中
 var isInParent = window.parent !== window;
 // 向父节点发送
-function sendDad(obj) {
+export function sendDad(obj) {
   return new Promise((resolve, reject) => {
     if (!isInParent) {
       console.warn("本页面并非嵌入页，找不到对应父级");
@@ -122,7 +122,7 @@ function sendDad(obj) {
     window.parent.postMessage(
       JSON.stringify({
         [K_ID]: msgId,
-        data: obj,
+        data: obj
       }),
       "*"
     );
@@ -136,5 +136,4 @@ function sendDad(obj) {
     }, TIMEOUT);
   });
 }
-
 export default { setDefaultSon, setMsgHandler, sendSon, sendDad };
