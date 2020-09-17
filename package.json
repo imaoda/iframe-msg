@@ -22,8 +22,5 @@
   "bugs": {
     "url": "https://github.com/imaoda/iframe-msg/issues"
   },
-  "homepage": "https://github.com/imaoda/iframe-msg#readme",
-  "dependencies": {
-    "umi-library": "^1.6.0"
-  }
+  "homepage": "https://github.com/imaoda/iframe-msg#readme"
 }
