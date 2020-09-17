@@ -1,6 +1,6 @@
 {
   "name": "iframe-msg",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "send msg between iframe with promises",
   "main": "index.js",
   "scripts": {
