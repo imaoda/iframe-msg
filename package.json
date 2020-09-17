@@ -1,8 +1,8 @@
 {
   "name": "iframe-msg",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "send msg between iframe with promises",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
