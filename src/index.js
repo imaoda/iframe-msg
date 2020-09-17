@@ -1,5 +1,3 @@
-import { type } from "os";
-
 var defaultSon = "";
 var promArrMapSon = {};
 var promArrMapDad = {};
