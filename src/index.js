@@ -18,6 +18,19 @@ function getDomFromName(name) {
   return null;
 }
 
+function getWindowFromName(name) {
+  if (typeof name === "string") {
+    if (name[0] === "#" || name[0] === ".") name = document.querySelector(name);
+    else if (window.frames[name]) return window.frames[name];
+  }
+
+  if (name instanceof HTMLIFrameElement) {
+    return name.contentWindow;
+  }
+
+  return null;
+}
+
 // 设置默认子iframe的name
 export function setDefaultSon(name) {
   defaultSon = getDomFromName(name);
@@ -46,7 +59,7 @@ export function sendSon(obj, name) {
       reject(`没有设置发送子frame的name，也可通过默认值设置`);
       return;
     }
-    var fr = getDomFromName(name);
+    var fr = getWindowFromName(name);
     if (name && !fr) {
       reject(`没有名为${name}的子iframe`);
       return;
